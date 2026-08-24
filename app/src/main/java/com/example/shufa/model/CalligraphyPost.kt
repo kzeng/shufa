@@ -7,7 +7,8 @@ data class CalligraphyPost(
     val dynasty: String,
     val style: CalligraphyStyle,
     val description: String,
-    val imageUrl: String
+    val imageUrl: String,
+    val characters: List<String> = emptyList()
 )
 
 enum class CalligraphyStyle(val label: String) {

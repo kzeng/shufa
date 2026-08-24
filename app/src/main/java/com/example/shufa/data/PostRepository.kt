@@ -29,6 +29,12 @@ class PostRepository(private val context: Context) {
         val array = JSONArray(json)
         return (0 until array.length()).map { i ->
             val obj = array.getJSONObject(i)
+            val charactersArray = obj.optJSONArray("characters")
+            val characters = if (charactersArray != null) {
+                (0 until charactersArray.length()).map { charactersArray.getString(it) }
+            } else {
+                emptyList()
+            }
             CalligraphyPost(
                 id = obj.getString("id"),
                 title = obj.getString("title"),
@@ -36,7 +42,8 @@ class PostRepository(private val context: Context) {
                 dynasty = obj.getString("dynasty"),
                 style = CalligraphyStyle.valueOf(obj.getString("style")),
                 description = obj.getString("description"),
-                imageUrl = obj.getString("imageUrl")
+                imageUrl = obj.optString("imageUrl", ""),
+                characters = characters
             )
         }
     }
