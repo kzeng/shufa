@@ -1,0 +1,47 @@
+[
+    {
+        "id": "yan-qin-li-biao",
+        "title": "颜勤礼碑",
+        "author": "颜真卿",
+        "dynasty": "唐",
+        "style": "KAISHU",
+        "description": "颜真卿晚年楷书代表作，结构方正茂密，笔画横轻竖重。",
+        "imageUrl": ""
+    },
+    {
+        "id": "lan-ting-xu",
+        "title": "兰亭集序",
+        "author": "王羲之",
+        "dynasty": "东晋",
+        "style": "XINGSHU",
+        "description": "天下第一行书，笔法精妙，气韵生动。",
+        "imageUrl": ""
+    },
+    {
+        "id": "zi-xi-tie",
+        "title": "自叙帖",
+        "author": "怀素",
+        "dynasty": "唐",
+        "style": "CAOSHU",
+        "description": "草书代表作，笔势纵横奔放，如骤雨旋风。",
+        "imageUrl": ""
+    },
+    {
+        "id": "li-qi-bei",
+        "title": "礼器碑",
+        "author": "佚名",
+        "dynasty": "东汉",
+        "style": "LISHU",
+        "description": "隶书经典碑刻，结体端庄，笔画瘦劲。",
+        "imageUrl": ""
+    },
+    {
+        "id": "yi-shan-bei",
+        "title": "峄山碑",
+        "author": "李斯",
+        "dynasty": "秦",
+        "style": "ZHUANSHU",
+        "description": "小篆代表作，线条匀称，结构严谨。",
+        "imageUrl": ""
+    }
+]
