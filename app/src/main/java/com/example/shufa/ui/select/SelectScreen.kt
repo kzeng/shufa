@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -54,11 +58,37 @@ fun SelectScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
+            OutlinedTextField(
+                value = uiState.searchQuery,
+                onValueChange = { viewModel.updateSearchQuery(it) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                placeholder = { Text("搜索贴名、作者、年代...") },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "搜索"
+                    )
+                },
+                singleLine = true
+            )
+
             StyleFilterChips(
                 selectedStyle = uiState.selectedStyle,
                 onStyleSelected = { viewModel.filterByStyle(it) },
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
             )
+
+            val filteredPosts = uiState.posts.filter { post ->
+                val matchesStyle = uiState.selectedStyle == null || post.style == uiState.selectedStyle
+                val matchesSearch = uiState.searchQuery.isEmpty() ||
+                    post.title.contains(uiState.searchQuery, ignoreCase = true) ||
+                    post.author.contains(uiState.searchQuery, ignoreCase = true) ||
+                    post.dynasty.contains(uiState.searchQuery, ignoreCase = true) ||
+                    post.style.label.contains(uiState.searchQuery, ignoreCase = true)
+                matchesStyle && matchesSearch
+            }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
@@ -67,7 +97,7 @@ fun SelectScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(viewModel.getFilteredPosts()) { post ->
+                items(filteredPosts) { post ->
                     PostCard(
                         post = post,
                         onClick = { onPostClick(post.id) }

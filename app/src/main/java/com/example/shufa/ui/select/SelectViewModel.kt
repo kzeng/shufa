@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 data class SelectUiState(
     val posts: List<CalligraphyPost> = emptyList(),
     val selectedStyle: CalligraphyStyle? = null,
+    val searchQuery: String = "",
     val isLoading: Boolean = true
 )
 
@@ -30,11 +31,18 @@ class SelectViewModel(application: Application) : AndroidViewModel(application) 
 
     private fun loadPosts() {
         viewModelScope.launch {
-            val posts = repository.getPosts()
-            _uiState.value = SelectUiState(
-                posts = posts,
-                isLoading = false
-            )
+            try {
+                val posts = repository.getPosts()
+                _uiState.value = SelectUiState(
+                    posts = posts,
+                    isLoading = false
+                )
+            } catch (e: Exception) {
+                _uiState.value = SelectUiState(
+                    posts = emptyList(),
+                    isLoading = false
+                )
+            }
         }
     }
 
@@ -42,12 +50,20 @@ class SelectViewModel(application: Application) : AndroidViewModel(application) 
         _uiState.value = _uiState.value.copy(selectedStyle = style)
     }
 
+    fun updateSearchQuery(query: String) {
+        _uiState.value = _uiState.value.copy(searchQuery = query)
+    }
+
     fun getFilteredPosts(): List<CalligraphyPost> {
         val state = _uiState.value
-        return if (state.selectedStyle != null) {
-            state.posts.filter { it.style == state.selectedStyle }
-        } else {
-            state.posts
+        return state.posts.filter { post ->
+            val matchesStyle = state.selectedStyle == null || post.style == state.selectedStyle
+            val matchesSearch = state.searchQuery.isEmpty() ||
+                post.title.contains(state.searchQuery, ignoreCase = true) ||
+                post.author.contains(state.searchQuery, ignoreCase = true) ||
+                post.dynasty.contains(state.searchQuery, ignoreCase = true) ||
+                post.style.label.contains(state.searchQuery, ignoreCase = true)
+            matchesStyle && matchesSearch
         }
     }
 }
