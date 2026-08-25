@@ -251,7 +251,7 @@ private fun AboutDialog(onDismiss: () -> Unit) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text("APP：书法学习")
                 Text("Author: Zengkai001@qq.com")
-                Text("Version: 0.0.2")
+                Text("Version: 0.0.3")
             }
         },
         confirmButton = {
