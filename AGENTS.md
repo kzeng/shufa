@@ -40,6 +40,13 @@ app/src/main/java/com/example/shufa/
 
 字帖数据存储在 `app/src/main/assets/posts.json`，V1 阶段为本地 JSON，包含 5 个示例字帖（楷书/行书/草书/隶书/篆书各一）。
 
+## 资源来源
+
+字帖数据来源于以下书法网站：
+- **字帖网** (https://www.zitiewang.com/) — 碑帖图片、详细介绍
+- **雅策** (http://www.yac8.com/wap/) — 补充参考
+- **快书法** (https://www.kshufa.com/) — 补充参考
+
 ## 功能参考
 
 - 「不厌书法」APP — 选贴、看贴功能参考

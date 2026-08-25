@@ -1,50 +1,67 @@
 package com.example.shufa.data
 
 import android.content.Context
+import com.example.shufa.data.db.AppDatabase
+import com.example.shufa.data.db.PostEntity
 import com.example.shufa.model.CalligraphyPost
 import com.example.shufa.model.CalligraphyStyle
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
 
 class PostRepository(private val context: Context) {
 
-    private var cachedPosts: List<CalligraphyPost>? = null
+    private val database = AppDatabase.getDatabase(context)
+    private val postDao = database.postDao()
 
-    suspend fun getPosts(): List<CalligraphyPost> {
-        cachedPosts?.let { return it }
-        return withContext(Dispatchers.IO) {
-            val json = context.assets.open("posts.json").bufferedReader().use { it.readText() }
-            val posts = parsePosts(json)
-            cachedPosts = posts
-            posts
+    fun getAllPosts(): Flow<List<CalligraphyPost>> {
+        return postDao.getAllPosts().map { entities ->
+            entities.map { it.toCalligraphyPost() }
+        }
+    }
+
+    fun searchPosts(query: String): Flow<List<CalligraphyPost>> {
+        return postDao.searchPosts(query).map { entities ->
+            entities.map { it.toCalligraphyPost() }
+        }
+    }
+
+    fun getPostsByStyle(style: CalligraphyStyle): Flow<List<CalligraphyPost>> {
+        return postDao.getPostsByStyle(style.name).map { entities ->
+            entities.map { it.toCalligraphyPost() }
         }
     }
 
     suspend fun getPostById(id: String): CalligraphyPost? {
-        return getPosts().find { it.id == id }
+        return withContext(Dispatchers.IO) {
+            postDao.getPostById(id)?.toCalligraphyPost()
+        }
     }
 
-    private fun parsePosts(json: String): List<CalligraphyPost> {
-        val array = JSONArray(json)
-        return (0 until array.length()).map { i ->
-            val obj = array.getJSONObject(i)
-            val charactersArray = obj.optJSONArray("characters")
-            val characters = if (charactersArray != null) {
-                (0 until charactersArray.length()).map { charactersArray.getString(it) }
-            } else {
-                emptyList()
-            }
-            CalligraphyPost(
-                id = obj.getString("id"),
-                title = obj.getString("title"),
-                author = obj.getString("author"),
-                dynasty = obj.getString("dynasty"),
-                style = CalligraphyStyle.valueOf(obj.getString("style")),
-                description = obj.getString("description"),
-                imageUrl = obj.optString("imageUrl", ""),
-                characters = characters
-            )
+    suspend fun addPost(post: CalligraphyPost) {
+        withContext(Dispatchers.IO) {
+            val entity = PostEntity.fromCalligraphyPost(post, isBuiltIn = false)
+            postDao.insertPost(entity)
+        }
+    }
+
+    suspend fun addPosts(posts: List<CalligraphyPost>) {
+        withContext(Dispatchers.IO) {
+            val entities = posts.map { PostEntity.fromCalligraphyPost(it, isBuiltIn = false) }
+            postDao.insertPosts(entities)
+        }
+    }
+
+    suspend fun getPostCount(): Int {
+        return withContext(Dispatchers.IO) {
+            postDao.getPostCount()
+        }
+    }
+
+    suspend fun isPostExists(id: String): Boolean {
+        return withContext(Dispatchers.IO) {
+            postDao.isPostExists(id)
         }
     }
 }

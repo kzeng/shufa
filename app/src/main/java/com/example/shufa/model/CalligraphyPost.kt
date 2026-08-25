@@ -7,14 +7,14 @@ data class CalligraphyPost(
     val dynasty: String,
     val style: CalligraphyStyle,
     val description: String,
-    val imageUrl: String,
+    val imageUrls: List<String> = emptyList(),
     val characters: List<String> = emptyList()
 )
 
 enum class CalligraphyStyle(val label: String) {
-    KAISHU("楷书"),
-    XINGSHU("行书"),
-    CAOSHU("草书"),
-    LISHU("隶书"),
-    ZHUANSHU("篆书")
+    KAISHU("楷"),
+    XINGSHU("行"),
+    CAOSHU("草"),
+    LISHU("隶"),
+    ZHUANSHU("篆")
 }

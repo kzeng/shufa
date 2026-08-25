@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp") version "2.0.21-1.0.27"
 }
 
 android {
@@ -38,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    ksp {
+        arg("room.schemaLocation", "$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -49,6 +54,7 @@ dependencies {
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.foundation:foundation")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Material 3
@@ -67,4 +73,12 @@ dependencies {
 
     // Core
     implementation("androidx.core:core-ktx:1.15.0")
+
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
 }

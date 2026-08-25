@@ -24,6 +24,7 @@ class ViewViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loadPost(postId: String) {
         viewModelScope.launch {
+            _uiState.value = ViewUiState(isLoading = true)
             val post = repository.getPostById(postId)
             _uiState.value = ViewUiState(
                 post = post,
