@@ -81,14 +81,18 @@ fun SelectScreen(
     var currentPage by remember { mutableIntStateOf(0) }
     var showAboutDialog by remember { mutableStateOf(false) }
 
+    val isSearching = uiState.searchQuery.isNotEmpty()
     val filteredPosts = uiState.posts.filter { post ->
-        val matchesStyle = uiState.selectedStyle == null || post.style == uiState.selectedStyle
         val matchesSearch = uiState.searchQuery.isEmpty() ||
             post.title.contains(uiState.searchQuery, ignoreCase = true) ||
             post.author.contains(uiState.searchQuery, ignoreCase = true) ||
             post.dynasty.contains(uiState.searchQuery, ignoreCase = true) ||
             post.style.label.contains(uiState.searchQuery, ignoreCase = true) ||
             post.description.contains(uiState.searchQuery, ignoreCase = true)
+        // 搜索时忽略风格筛选（与 ViewModel 的 DB 查询行为一致）
+        val matchesStyle = isSearching ||
+            uiState.selectedStyle == null ||
+            post.style == uiState.selectedStyle
         matchesStyle && matchesSearch
     }
 
