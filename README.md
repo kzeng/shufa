@@ -15,11 +15,11 @@
 
 | 选贴页面 | 看贴 · 整帖查看 |
 | :---: | :---: |
-| <img src="docs/screenshots/01_select.png" width="260"> | <img src="docs/screenshots/04_fullpiece.png" width="260"> |
+| <img src="docs/screenshots/01_select.png" width="260"> | <img src="docs/screenshots/02_view.png" width="260"> |
 
 | 看贴 · 碑帖介绍 | 全屏查看 |
 | :---: | :---: |
-| <img src="docs/screenshots/03_description.png" width="260"> | <img src="docs/screenshots/05_fullscreen.png" width="260"> |
+| <img src="docs/screenshots/03_description.png" width="260"> | <img src="docs/screenshots/04_fullscreen.png" width="260"> |
 
 ## 技术栈
 
