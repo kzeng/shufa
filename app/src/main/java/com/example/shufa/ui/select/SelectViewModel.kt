@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -58,25 +57,23 @@ class SelectViewModel(application: Application) : AndroidViewModel(application) 
                 } else {
                     repository.searchPosts(query)
                 }
-            }.map { posts ->
-                SelectUiState(
+            }.collect { posts ->
+                _uiState.value = _uiState.value.copy(
                     posts = posts,
-                    selectedStyle = _selectedStyle.value,
-                    searchQuery = _searchQuery.value,
                     isLoading = false
                 )
-            }.collect { state ->
-                _uiState.value = state
             }
         }
     }
 
     fun filterByStyle(style: CalligraphyStyle?) {
         _selectedStyle.value = style
+        _uiState.value = _uiState.value.copy(selectedStyle = style)
     }
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+        _uiState.value = _uiState.value.copy(searchQuery = query)
         if (query.length >= 2) {
             searchNetwork(query)
         }
