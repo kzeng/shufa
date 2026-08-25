@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -305,7 +306,10 @@ private fun FullScreenImageViewer(
 
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false)
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false,
+            decorFitsSystemWindows = false
+        )
     ) {
         Surface(
             modifier = Modifier
@@ -314,70 +318,76 @@ private fun FullScreenImageViewer(
             color = Color.Black
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
-                HorizontalPager(
-                    state = pagerState,
-                    modifier = Modifier.fillMaxSize()
-                ) { page ->
-                    var scale by remember { mutableFloatStateOf(1f) }
-                    var offsetX by remember { mutableFloatStateOf(0f) }
-                    var offsetY by remember { mutableFloatStateOf(0f) }
+                Column(modifier = Modifier.fillMaxSize()) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxWidth()
+                            .padding(top = 100.dp)
+                    ) { page ->
+                        var scale by remember { mutableFloatStateOf(1f) }
+                        var offsetX by remember { mutableFloatStateOf(0f) }
+                        var offsetY by remember { mutableFloatStateOf(0f) }
 
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(imageUrls[page])
-                                .crossfade(true)
-                                .setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
-                                .build(),
-                            contentDescription = "$title - 第${page + 1}页",
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .pointerInput(Unit) {
-                                    awaitEachGesture {
-                                        val down = awaitFirstDown(requireUnconsumed = false)
-                                        var zoom = 1f
-                                        var pastTouchSlop = false
-                                        val touchSlop = viewConfiguration.touchSlop
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.TopCenter
+                        ) {
+                            AsyncImage(
+                                model = ImageRequest.Builder(LocalContext.current)
+                                    .data(imageUrls[page])
+                                    .crossfade(true)
+                                    .setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                                    .build(),
+                                contentDescription = "$title - 第${page + 1}页",
+                                contentScale = ContentScale.Fit,
+                                alignment = Alignment.TopCenter,
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .pointerInput(Unit) {
+                                        awaitEachGesture {
+                                            val down = awaitFirstDown(requireUnconsumed = false)
+                                            var zoom = 1f
+                                            var pastTouchSlop = false
+                                            val touchSlop = viewConfiguration.touchSlop
 
-                                        do {
-                                            val event = awaitPointerEvent()
-                                            if (event.changes.size >= 2) {
-                                                zoom *= event.calculateZoom()
-                                            } else if (event.changes.size == 1) {
-                                                val change = event.changes[0]
-                                                val pan = change.position - change.previousPosition
-                                                if (!pastTouchSlop) {
-                                                    if (pan.getDistance() > touchSlop) {
-                                                        pastTouchSlop = true
+                                            do {
+                                                val event = awaitPointerEvent()
+                                                if (event.changes.size >= 2) {
+                                                    zoom *= event.calculateZoom()
+                                                } else if (event.changes.size == 1) {
+                                                    val change = event.changes[0]
+                                                    val pan = change.position - change.previousPosition
+                                                    if (!pastTouchSlop) {
+                                                        if (pan.getDistance() > touchSlop) {
+                                                            pastTouchSlop = true
+                                                        }
+                                                    }
+                                                    if (pastTouchSlop && scale > 1f) {
+                                                        change.consume()
+                                                        offsetX += pan.x
+                                                        offsetY += pan.y
                                                     }
                                                 }
-                                                if (pastTouchSlop && scale > 1f) {
-                                                    change.consume()
-                                                    offsetX += pan.x
-                                                    offsetY += pan.y
-                                                }
-                                            }
-                                        } while (event.changes.any { it.pressed })
+                                            } while (event.changes.any { it.pressed })
 
-                                        scale = (scale * zoom).coerceIn(1f, 5f)
-                                        if (scale <= 1.05f) {
-                                            scale = 1f
-                                            offsetX = 0f
-                                            offsetY = 0f
+                                            scale = (scale * zoom).coerceIn(1f, 5f)
+                                            if (scale <= 1.05f) {
+                                                scale = 1f
+                                                offsetX = 0f
+                                                offsetY = 0f
+                                            }
                                         }
                                     }
-                                }
                                 .graphicsLayer {
                                     scaleX = scale
                                     scaleY = scale
                                     translationX = offsetX
                                     translationY = offsetY
                                 }
-                        )
+                            )
+                        }
                     }
                 }
 
@@ -399,8 +409,8 @@ private fun FullScreenImageViewer(
                     color = Color.White,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(16.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(top = 64.dp)
                         .background(
                             Color.Black.copy(alpha = 0.5f),
                             RoundedCornerShape(4.dp)
@@ -412,8 +422,8 @@ private fun FullScreenImageViewer(
                 if (showPageSelector) {
                     Surface(
                         modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 50.dp)
+                            .align(Alignment.TopCenter)
+                            .padding(top = 120.dp)
                             .padding(horizontal = 32.dp),
                         shape = RoundedCornerShape(8.dp),
                         color = Color.Black.copy(alpha = 0.8f)
@@ -422,7 +432,8 @@ private fun FullScreenImageViewer(
                             columns = GridCells.Fixed(5),
                             contentPadding = PaddingValues(8.dp),
                             horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.heightIn(max = 220.dp)
                         ) {
                             items(imageUrls.size) { index ->
                                 Text(
