@@ -103,7 +103,7 @@ fun SelectScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
-                            painter = painterResource(R.mipmap.ic_launcher),
+                            painter = painterResource(R.drawable.ic_app_logo),
                             contentDescription = "App 图标",
                             modifier = Modifier
                                 .size(32.dp)
