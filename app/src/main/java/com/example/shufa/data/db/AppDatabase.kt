@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 
-@Database(entities = [PostEntity::class], version = 3, exportSchema = true)
+@Database(entities = [PostEntity::class], version = 4, exportSchema = true)
 abstract class AppDatabase : RoomDatabase() {
     
     abstract fun postDao(): PostDao
