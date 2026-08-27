@@ -1,16 +1,21 @@
 package com.example.shufa.ui.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -36,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.shufa.R
 import com.example.shufa.ui.favorites.FavoritesContent
@@ -124,27 +130,27 @@ private fun HomeTab(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .width(64.dp)
+            .padding(vertical = 6.dp)
     ) {
         Text(
             text = text,
             style = MaterialTheme.typography.titleMedium,
-            color = if (selected) MaterialTheme.colorScheme.primary else color.copy(alpha = 0.7f)
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center,
+            color = if (selected) MaterialTheme.colorScheme.onPrimaryContainer else color.copy(alpha = 0.6f)
         )
-        Spacer(modifier = Modifier.size(2.dp))
-        if (selected) {
-            Text(
-                text = "━",
-                style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            Text(
-                text = "  ",
-                style = MaterialTheme.typography.labelMedium,
-                color = Color.Transparent
-            )
-        }
+        Spacer(modifier = Modifier.size(6.dp))
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .fillMaxWidth()
+                .height(3.dp)
+                .background(
+                    color = if (selected) MaterialTheme.colorScheme.primary else Color.Transparent,
+                    shape = RoundedCornerShape(2.dp)
+                )
+        )
     }
 }
 
