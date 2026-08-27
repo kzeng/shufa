@@ -33,6 +33,18 @@ class PostRepository(private val context: Context) {
         }
     }
 
+    fun getFavoritePosts(): Flow<List<CalligraphyPost>> {
+        return postDao.getFavoritePosts().map { entities ->
+            entities.map { it.toCalligraphyPost() }
+        }
+    }
+
+    suspend fun setFavorite(id: String, isFavorite: Boolean) {
+        withContext(Dispatchers.IO) {
+            postDao.setFavorite(id, isFavorite)
+        }
+    }
+
     suspend fun getPostById(id: String): CalligraphyPost? {
         return withContext(Dispatchers.IO) {
             postDao.getPostById(id)?.toCalligraphyPost()

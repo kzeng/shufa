@@ -16,6 +16,12 @@ interface PostDao {
     @Query("SELECT * FROM posts WHERE id = :id")
     suspend fun getPostById(id: String): PostEntity?
 
+    @Query("SELECT * FROM posts WHERE isFavorite = 1 ORDER BY title ASC")
+    fun getFavoritePosts(): Flow<List<PostEntity>>
+
+    @Query("UPDATE posts SET isFavorite = :isFavorite WHERE id = :id")
+    suspend fun setFavorite(id: String, isFavorite: Boolean)
+
     @Query("""
         SELECT * FROM posts
         WHERE title LIKE '%' || :query || '%'

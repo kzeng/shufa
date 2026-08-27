@@ -6,24 +6,30 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.shufa.ui.select.SelectScreen
+import com.example.shufa.ui.home.HomeScreen
 import com.example.shufa.ui.view.ViewScreen
 
 object Routes {
-    const val SELECT = "select"
+    const val HOME = "home"
     const val VIEW = "view/{postId}"
 
     fun view(postId: String) = "view/$postId"
 }
 
 @Composable
-fun ShufaNavGraph(navController: NavHostController) {
+fun ShufaNavGraph(
+    navController: NavHostController,
+    darkTheme: Boolean,
+    onToggleTheme: () -> Unit
+) {
     NavHost(
         navController = navController,
-        startDestination = Routes.SELECT
+        startDestination = Routes.HOME
     ) {
-        composable(Routes.SELECT) {
-            SelectScreen(
+        composable(Routes.HOME) {
+            HomeScreen(
+                darkTheme = darkTheme,
+                onToggleTheme = onToggleTheme,
                 onPostClick = { postId ->
                     navController.navigate(Routes.view(postId))
                 }

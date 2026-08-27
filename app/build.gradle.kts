@@ -13,8 +13,8 @@ android {
         applicationId = "com.example.shufa"
         minSdk = 24
         targetSdk = 35
-        versionCode = 7
-        versionName = "0.0.7"
+        versionCode = 8
+        versionName = "0.0.8"
     }
 
     buildTypes {
@@ -59,6 +59,8 @@ dependencies {
 
     // Material 3
     implementation("androidx.compose.material3:material3")
+    // Extended icons (DarkMode/LightMode/Favorite etc.)
+    implementation("androidx.compose.material:material-icons-extended")
 
     // Activity & ViewModel
     implementation("androidx.activity:activity-compose:1.9.3")

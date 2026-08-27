@@ -28,6 +28,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -93,6 +95,20 @@ fun ViewScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "返回"
                         )
+                    }
+                },
+                actions = {
+                    if (uiState.post != null) {
+                        IconButton(onClick = { viewModel.toggleFavorite() }) {
+                            Icon(
+                                imageVector = if (uiState.post!!.isFavorite) {
+                                    Icons.Default.Favorite
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                },
+                                contentDescription = if (uiState.post!!.isFavorite) "取消收藏" else "收藏"
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -324,7 +340,7 @@ private fun FullScreenImageViewer(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxWidth()
-                            .padding(top = 100.dp)
+                            .padding(top = 48.dp)
                     ) { page ->
                         var scale by remember { mutableFloatStateOf(1f) }
                         var offsetX by remember { mutableFloatStateOf(0f) }
@@ -410,7 +426,7 @@ private fun FullScreenImageViewer(
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 64.dp)
+                        .padding(top = 16.dp)
                         .background(
                             Color.Black.copy(alpha = 0.5f),
                             RoundedCornerShape(4.dp)
@@ -423,7 +439,7 @@ private fun FullScreenImageViewer(
                     Surface(
                         modifier = Modifier
                             .align(Alignment.TopCenter)
-                            .padding(top = 120.dp)
+                            .padding(top = 56.dp)
                             .padding(horizontal = 32.dp),
                         shape = RoundedCornerShape(8.dp),
                         color = Color.Black.copy(alpha = 0.8f)

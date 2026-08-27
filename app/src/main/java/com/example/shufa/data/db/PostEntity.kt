@@ -16,7 +16,8 @@ data class PostEntity(
     val description: String,
     val imageUrls: String,
     val characters: String,
-    val isBuiltIn: Boolean = true
+    val isBuiltIn: Boolean = true,
+    val isFavorite: Boolean = false
 ) {
     fun toCalligraphyPost(): CalligraphyPost {
         return CalligraphyPost(
@@ -27,7 +28,8 @@ data class PostEntity(
             style = CalligraphyStyle.valueOf(style),
             description = description,
             imageUrls = parseJsonArray(imageUrls),
-            characters = parseJsonArray(characters)
+            characters = parseJsonArray(characters),
+            isFavorite = isFavorite
         )
     }
 
@@ -42,7 +44,8 @@ data class PostEntity(
                 description = post.description,
                 imageUrls = post.imageUrls.joinToString(","),
                 characters = post.characters.joinToString(","),
-                isBuiltIn = isBuiltIn
+                isBuiltIn = isBuiltIn,
+                isFavorite = post.isFavorite
             )
         }
 

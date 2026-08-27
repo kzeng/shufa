@@ -8,7 +8,8 @@ data class CalligraphyPost(
     val style: CalligraphyStyle,
     val description: String,
     val imageUrls: List<String> = emptyList(),
-    val characters: List<String> = emptyList()
+    val characters: List<String> = emptyList(),
+    val isFavorite: Boolean = false
 )
 
 enum class CalligraphyStyle(val label: String) {

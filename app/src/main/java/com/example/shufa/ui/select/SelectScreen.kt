@@ -1,6 +1,5 @@
 package com.example.shufa.ui.select
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -16,36 +15,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -54,32 +45,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import com.example.shufa.R
 import com.example.shufa.model.CalligraphyPost
 import com.example.shufa.model.CalligraphyStyle
 import kotlinx.coroutines.launch
 
 private const val PAGE_SIZE = 10
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectScreen(
+fun SelectContent(
     onPostClick: (String) -> Unit,
     viewModel: SelectViewModel = viewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    var currentPage by remember { mutableIntStateOf(0) }
-    var showAboutDialog by remember { mutableStateOf(false) }
+    var currentPage by androidx.compose.runtime.remember { mutableIntStateOf(0) }
 
     val isSearching = uiState.searchQuery.isNotEmpty()
     val filteredPosts = uiState.posts.filter { post ->
@@ -89,7 +75,6 @@ fun SelectScreen(
             post.dynasty.contains(uiState.searchQuery, ignoreCase = true) ||
             post.style.label.contains(uiState.searchQuery, ignoreCase = true) ||
             post.description.contains(uiState.searchQuery, ignoreCase = true)
-        // 搜索时忽略风格筛选（与 ViewModel 的 DB 查询行为一致）
         val matchesStyle = isSearching ||
             uiState.selectedStyle == null ||
             post.style == uiState.selectedStyle
@@ -99,38 +84,8 @@ fun SelectScreen(
     val totalPages = (filteredPosts.size + PAGE_SIZE - 1) / PAGE_SIZE
     val pagedPosts = filteredPosts.drop(currentPage * PAGE_SIZE).take(PAGE_SIZE)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_app_logo),
-                            contentDescription = "App 图标",
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape)
-                                .clickable { showAboutDialog = true }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("选贴")
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             OutlinedTextField(
                 value = uiState.searchQuery,
                 onValueChange = {
@@ -235,31 +190,12 @@ fun SelectScreen(
                 )
             }
         }
-    }
 
-    if (showAboutDialog) {
-        AboutDialog(onDismiss = { showAboutDialog = false })
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
-}
-
-@Composable
-private fun AboutDialog(onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("关于") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("APP：书法学习")
-                Text("Author: Zengkai001@qq.com")
-                Text("Version: 0.0.7")
-            }
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) {
-                Text("确定")
-            }
-        }
-    )
 }
 
 @Composable

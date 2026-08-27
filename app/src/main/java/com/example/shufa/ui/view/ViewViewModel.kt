@@ -32,4 +32,15 @@ class ViewViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
     }
+
+    fun toggleFavorite() {
+        val post = _uiState.value.post ?: return
+        val newValue = !post.isFavorite
+        _uiState.value = _uiState.value.copy(
+            post = post.copy(isFavorite = newValue)
+        )
+        viewModelScope.launch {
+            repository.setFavorite(post.id, newValue)
+        }
+    }
 }
