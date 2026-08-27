@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -30,6 +32,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.TextDecrease
+import androidx.compose.material.icons.filled.TextIncrease
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,6 +87,7 @@ fun ViewScreen(
     }
 
     val uiState by viewModel.uiState.collectAsState()
+    val fontScale by viewModel.fontScale.collectAsState()
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -168,7 +173,11 @@ fun ViewScreen(
 
                     when (selectedTab) {
                         0 -> FullPieceView(post)
-                        1 -> PostDescriptionView(post)
+                        1 -> PostDescriptionView(
+                            post = post,
+                            fontScale = fontScale,
+                            onFontScaleChange = { viewModel.setFontScale(it) }
+                        )
                     }
                 }
             }
@@ -187,7 +196,11 @@ fun ViewScreen(
 }
 
 @Composable
-private fun PostDescriptionView(post: CalligraphyPost) {
+private fun PostDescriptionView(
+    post: CalligraphyPost,
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit
+) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -201,19 +214,67 @@ private fun PostDescriptionView(post: CalligraphyPost) {
                 Column(
                     modifier = Modifier.padding(16.dp)
                 ) {
-                    Text(
-                        text = "详细介绍",
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "详细介绍",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.weight(1f)
+                        )
+                        DescriptionFontControls(
+                            fontScale = fontScale,
+                            onFontScaleChange = onFontScaleChange
+                        )
+                    }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = post.description,
-                        style = MaterialTheme.typography.bodyLarge,
-                        lineHeight = MaterialTheme.typography.bodyLarge.lineHeight
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontSize = MaterialTheme.typography.bodyLarge.fontSize * fontScale,
+                            lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * fontScale
+                        )
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DescriptionFontControls(
+    fontScale: Float,
+    onFontScaleChange: (Float) -> Unit
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        IconButton(
+            onClick = { onFontScaleChange(fontScale - 0.2f) },
+            enabled = fontScale > 0.8f
+        ) {
+            Icon(
+                imageVector = Icons.Filled.TextDecrease,
+                contentDescription = "减小字体",
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        Text(
+            text = "${(fontScale * 100).toInt()}%",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.width(48.dp),
+            textAlign = TextAlign.Center
+        )
+        IconButton(
+            onClick = { onFontScaleChange(fontScale + 0.2f) },
+            enabled = fontScale < 1.8f
+        ) {
+            Icon(
+                imageVector = Icons.Filled.TextIncrease,
+                contentDescription = "增大字体",
+                tint = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
