@@ -26,4 +26,12 @@
 
 ------
 - 增加碑帖内容
-- 来源： 
+- 来源（列表页面）： 
+ 楷：http://www.yac8.com/wap/news/list_97.html
+ 行：http://www.yac8.com/wap/news/list_141.html
+ 隶：http://www.yac8.com/wap/news/list_143.html
+ 草：http://www.yac8.com/wap/news/list_142.html
+ 篆：http://www.yac8.com/wap/news/list_144.html
+
+
+ - 版本号升到v1.0.0 待我确认后再 add tag v1.0.0 and add releases 。
