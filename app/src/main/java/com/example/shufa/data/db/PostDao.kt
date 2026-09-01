@@ -13,6 +13,9 @@ interface PostDao {
     @Query("SELECT * FROM posts ORDER BY title ASC")
     fun getAllPosts(): Flow<List<PostEntity>>
 
+    @Query("SELECT * FROM posts")
+    suspend fun getAll(): List<PostEntity>
+
     @Query("SELECT * FROM posts WHERE id = :id")
     suspend fun getPostById(id: String): PostEntity?
 
@@ -53,4 +56,13 @@ interface PostDao {
 
     @Query("SELECT COUNT(*) FROM posts WHERE id = :id")
     suspend fun isPostExists(id: String): Boolean
+
+    @Query("SELECT tid FROM posts")
+    suspend fun getAllTids(): List<String>
+
+    @Query("SELECT id FROM posts WHERE isFavorite = 1")
+    suspend fun getFavoriteIds(): List<String>
+
+    @Query("UPDATE posts SET isFavorite = :isFavorite WHERE id = :id")
+    suspend fun setFavoriteFlag(id: String, isFavorite: Boolean)
 }

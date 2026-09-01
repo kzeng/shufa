@@ -152,7 +152,7 @@ fun ViewScreen(
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "${post.author} · ${post.dynasty} · ${post.style.label} · ${post.imageUrls.size}页",
+                            text = "${post.author} · ${post.dynasty} · ${post.style.label} · ${post.tid}",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary
                         )

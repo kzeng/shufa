@@ -2,6 +2,7 @@ package com.example.shufa.model
 
 data class CalligraphyPost(
     val id: String,
+    val tid: String,
     val title: String,
     val author: String,
     val dynasty: String,
@@ -9,6 +10,7 @@ data class CalligraphyPost(
     val description: String,
     val imageUrls: List<String> = emptyList(),
     val characters: List<String> = emptyList(),
+    val sourceUrl: List<String> = emptyList(),
     val isFavorite: Boolean = false
 )
 

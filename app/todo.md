@@ -22,10 +22,18 @@
 
 - 版本号升到v0.0.9 待我确认后再 add tag v0.0.9 and add releases 。
 
-
-
-------
-- 增加碑帖内容(利用网络爬虫skills)
+【v0.0.9 状态 - 2026-09-01，代码已全部完成并在 S90 设备验证通过，尚未提交/打tag/发版】
+已完成：
+  [x] posts.json：2447 帖全部补齐 tid（#XXXX，唯一，seed 20260901）+ sourceUrl（2404 帖可重建为 https://www.zitiewang.com/shufa/<seg>.htm，43 个旧 slug id 为 []）；清理了 98 个 huangtingjian 帖遗留的 url 字段，全部帖补全 characters，统一字段顺序（id,tid,title,author,dynasty,style,description,imageUrls,characters,sourceUrl）
+  [x] 代码：CalligraphyPost 增加 tid + sourceUrl；PostEntity 增加 tid/sourceUrl 列；AppDatabase 导入逻辑读新字段；PostDao 增加 getAll/getFavoriteIds/setFavoriteFlag；PostRepository 新增 ensureTid（网络搜索新增帖自动生成唯一 tid）；新增 TidUtils；SelectViewModel 网络帖 tid="" 待持久化时生成；ViewScreen 详情副标题改为 "作者 · 年代 · 字体 · #XXXX"（去掉了原 N页）
+  [x] 版本：build.gradle.kts versionCode 9 / versionName 0.0.9
+  [x] DB 升级保留收藏：MIGRATION_5_6（ALTER TABLE 加 tid/sourceUrl 两列，NOT NULL DEFAULT ''）；@Database exportSchema=false（原 true 但无 schemas/ 目录会导致 Room 静默走 destructive 迁移丢收藏）；getDatabase 的 runBlocking 内用 withContext(Dispatchers.IO){ instance.withTransaction{ backfillTidAndSourceUrl } } 回填 tid/sourceUrl 并恢复收藏（注意：suspend DAO 写入必须包在 withTransaction 中，否则报 "no current transaction"）
+  [x] 验证（S90，adb 192.168.0.108:34267）：全新安装 DB v6，2447 帖 / 2447 唯一 tid / 2404 帖有 sourceUrl / integrity_check ok；模拟 v0.0.8(v5 DB，3 个收藏) → 升级 v0.0.9：收藏 3 个全保留，收藏页正确显示 3 条；详情页副标题显示 "佚名 · 东汉 · 隶 · #G8OE" 等
+待办（Codex 继续）：
+  [ ] 待用户确认后 git commit 本次 v0.0.9 改动（当前工作区未提交：8 个修改文件 + 新增 TidUtils.kt）
+  [ ] 确认后打 tag v0.0.9 并创建 GitHub release（参考 v0.0.8 流程：debug APK 重命名 shufa-v0.0.9.apk，GitHub API + git credential 取 token，中文 release body）
+  [ ] 注意：MIUI 设备 logcat 可能捕获不到 Log.d（不影响功能）；无线 adb 重连若失败，连 USB 后再 adb connect
+- 为APP增加碑帖内容(利用网络爬虫skills)
 - 来源： 
  楷：http://www.yac8.com/wap/news/list_97.html  列表页面，点击‘下一页’翻页
  行：http://www.yac8.com/wap/news/list_141.html 列表页面，点击‘下一页’翻页

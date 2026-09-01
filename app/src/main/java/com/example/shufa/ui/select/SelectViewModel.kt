@@ -146,6 +146,7 @@ class SelectViewModel(application: Application) : AndroidViewModel(application) 
             results.add(
                 CalligraphyPost(
                     id = id,
+                    tid = "",
                     title = title,
                     author = extractAuthor(title),
                     dynasty = extractDynasty(title),

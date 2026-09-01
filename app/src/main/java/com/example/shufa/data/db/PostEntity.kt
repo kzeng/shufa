@@ -9,6 +9,7 @@ import com.example.shufa.model.CalligraphyStyle
 data class PostEntity(
     @PrimaryKey
     val id: String,
+    val tid: String,
     val title: String,
     val author: String,
     val dynasty: String,
@@ -16,12 +17,14 @@ data class PostEntity(
     val description: String,
     val imageUrls: String,
     val characters: String,
+    val sourceUrl: String = "",
     val isBuiltIn: Boolean = true,
     val isFavorite: Boolean = false
 ) {
     fun toCalligraphyPost(): CalligraphyPost {
         return CalligraphyPost(
             id = id,
+            tid = tid,
             title = title,
             author = author,
             dynasty = dynasty,
@@ -29,6 +32,7 @@ data class PostEntity(
             description = description,
             imageUrls = parseJsonArray(imageUrls),
             characters = parseJsonArray(characters),
+            sourceUrl = parseJsonArray(sourceUrl),
             isFavorite = isFavorite
         )
     }
@@ -37,6 +41,7 @@ data class PostEntity(
         fun fromCalligraphyPost(post: CalligraphyPost, isBuiltIn: Boolean = true): PostEntity {
             return PostEntity(
                 id = post.id,
+                tid = post.tid,
                 title = post.title,
                 author = post.author,
                 dynasty = post.dynasty,
@@ -44,6 +49,7 @@ data class PostEntity(
                 description = post.description,
                 imageUrls = post.imageUrls.joinToString(","),
                 characters = post.characters.joinToString(","),
+                sourceUrl = post.sourceUrl.joinToString(","),
                 isBuiltIn = isBuiltIn,
                 isFavorite = post.isFavorite
             )

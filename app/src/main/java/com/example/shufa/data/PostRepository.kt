@@ -53,15 +53,30 @@ class PostRepository(private val context: Context) {
 
     suspend fun addPost(post: CalligraphyPost) {
         withContext(Dispatchers.IO) {
-            val entity = PostEntity.fromCalligraphyPost(post, isBuiltIn = false)
+            val withTid = ensureTid(post)
+            val entity = PostEntity.fromCalligraphyPost(withTid, isBuiltIn = false)
             postDao.insertPost(entity)
         }
     }
 
     suspend fun addPosts(posts: List<CalligraphyPost>) {
         withContext(Dispatchers.IO) {
-            val entities = posts.map { PostEntity.fromCalligraphyPost(it, isBuiltIn = false) }
+            val entities = posts.map { PostEntity.fromCalligraphyPost(ensureTid(it), isBuiltIn = false) }
             postDao.insertPosts(entities)
+        }
+    }
+
+    private suspend fun ensureTid(post: CalligraphyPost): CalligraphyPost {
+        return if (post.tid.isBlank()) {
+            post.copy(tid = generateUniqueTid())
+        } else {
+            post
+        }
+    }
+
+    suspend fun generateUniqueTid(): String {
+        return withContext(Dispatchers.IO) {
+            TidUtils.generate(postDao.getAllTids().toSet())
         }
     }
 
