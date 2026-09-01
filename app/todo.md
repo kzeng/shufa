@@ -25,13 +25,14 @@
 
 
 ------
-- 增加碑帖内容
-- 来源（列表页面）： 
- 楷：http://www.yac8.com/wap/news/list_97.html
- 行：http://www.yac8.com/wap/news/list_141.html
- 隶：http://www.yac8.com/wap/news/list_143.html
- 草：http://www.yac8.com/wap/news/list_142.html
- 篆：http://www.yac8.com/wap/news/list_144.html
+- 增加碑帖内容(利用网络爬虫skills)
+- 来源： 
+ 楷：http://www.yac8.com/wap/news/list_97.html  列表页面，点击‘下一页’翻页
+ 行：http://www.yac8.com/wap/news/list_141.html 列表页面，点击‘下一页’翻页
+ 隶：http://www.yac8.com/wap/news/list_143.html 列表页面，点击‘下一页’翻页
+ 草：http://www.yac8.com/wap/news/list_142.html 列表页面，点击‘下一页’翻页
+ 篆：http://www.yac8.com/wap/news/list_144.html 列表页面，点击‘下一页’翻页
 
+点击列表页条目，进入详情页，抓取碑帖文章内容和碑帖图片URL, 点击‘下一页’翻页。
 
  - 版本号升到v1.0.0 待我确认后再 add tag v1.0.0 and add releases 。
