@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 默认：禁止明文流量（Android 9+ 默认行为） -->
+    <base-config cleartextTrafficPermitted="false" />
+    <!-- yac8 图片源只有 http，单独放行 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">yac8.com</domain>
+    </domain-config>
+</network-security-config>

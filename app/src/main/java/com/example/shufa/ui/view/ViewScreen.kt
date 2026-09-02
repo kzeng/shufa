@@ -147,11 +147,6 @@ fun ViewScreen(
                             .padding(horizontal = 16.dp, vertical = 12.dp)
                     ) {
                         Text(
-                            text = post.title,
-                            style = MaterialTheme.typography.headlineMedium
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
                             text = "${post.author} · ${post.dynasty} · ${post.style.label} · ${post.tid}",
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary
