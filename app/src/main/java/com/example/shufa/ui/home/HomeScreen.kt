@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.shufa.BuildConfig
 import com.example.shufa.R
 import com.example.shufa.ui.favorites.FavoritesContent
 import com.example.shufa.ui.select.SelectContent
@@ -158,12 +159,28 @@ private fun HomeTab(
 private fun AboutDialog(onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("关于") },
+        title = {
+            Text(
+                text = "关于",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("APP：书法学习")
-                Text("Author: Zengkai001@qq.com")
-                Text("Version: 0.0.8")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.ic_app_logo),
+                    contentDescription = "书法学习 Logo",
+                    modifier = Modifier.size(96.dp)
+                )
+                Text("书法学习", textAlign = TextAlign.Center)
+                Text("作者：ZengKai", textAlign = TextAlign.Center)
+                Text("邮箱：zengkai001@qq.com", textAlign = TextAlign.Center)
+                Text("版本：${BuildConfig.VERSION_NAME}", textAlign = TextAlign.Center)
             }
         },
         confirmButton = {

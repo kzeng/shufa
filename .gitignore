@@ -32,3 +32,12 @@ app/schemas/
 
 # 子代理开发工作目录
 .sisyphus/
+
+# 爬虫断点与运行时进度
+scripts/progress/
+
+# 验证临时文件与备份
+scripts/verify/
+scripts/__pycache__/
+*.pyc
+posts.json.bak-*

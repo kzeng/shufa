@@ -55,18 +55,16 @@ abstract class AppDatabase : RoomDatabase() {
                 })
                 .build()
                 
-                // 确保数据已填充（升级时保留收藏，仅补 tid/sourceUrl）
+                // 按 id 补差集导入：每次启动都用 posts.json 全量 REPLACE 内置帖，
+                // 同时保留用户自建帖和收藏。对老用户升级自动补齐新帖。
                 runBlocking {
                     val dao = instance.postDao()
-                    val count = dao.getPostCount()
-                    if (count == 0) {
-                        populateInitialData(dao, context)
-                    } else {
-                        withContext(Dispatchers.IO) {
-                            instance.withTransaction {
-                                backfillTidAndSourceUrl(dao, context)
-                            }
+                    try {
+                        instance.withTransaction {
+                            mergeBuiltinPosts(dao, context)
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
                 
@@ -82,46 +80,38 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // 升级时保留旧数据（含收藏、用户帖子），仅补齐 tid/sourceUrl。
-        // 注意：此处的挂起 DAO 方法需在当前 runBlocking 上下文可安全执行。
-        // 采用 insertPosts(REPLACE) 全量重写内置数据；仅保留收藏与用户帖子。
-        private suspend fun backfillTidAndSourceUrl(dao: PostDao, context: Context) {
-            try {
-                val favoriteIds = dao.getFavoriteIds().toSet()
-                val allPosts = dao.getAll()
-                val hasEmptyTid = allPosts.any { it.tid.isBlank() }
-                if (!hasEmptyTid) return
+        // 按 id 补差集导入内置帖：读取 posts.json → REPLACE 内置帖（自动插入新帖、覆盖更新旧帖），
+        // 保留用户自建帖（id 不在内置集合中），恢复收藏，补齐用户帖的 tid。
+        private suspend fun mergeBuiltinPosts(dao: PostDao, context: Context) {
+            val posts = readBuiltinPosts(context)
+            val builtinIds = posts.map { it.id }.toSet()
 
-                val posts = readBuiltinPosts(context)
+            // 保存收藏状态（REPLACE 会将 isFavorite 重置为 false）
+            val favoriteIds = dao.getFavoriteIds().toSet()
 
-                // 用户追加的帖子（不在内置数据中的 id）保留原样，并补一个唯一 tid
-                val builtinIds = posts.map { it.id }.toSet()
-                val usedTids = allPosts.mapNotNull { it.tid.takeIf { t -> t.isNotBlank() } }.toMutableSet()
-                val userPosts = allPosts
-                    .filter { it.id !in builtinIds }
-                    .map { p ->
-                        val tid = if (p.tid.isNotBlank()) p.tid else {
-                            val n = TidUtils.generate(usedTids)
-                            usedTids.add(n)
-                            n
-                        }
-                        p.copy(tid = tid)
+            // 用 REPLACE 全量写入内置帖：新增的帖被插入，已存在的帖被覆盖（description、图片 URL、tid 等同步更新）
+            dao.insertPosts(posts)
+
+            // 补齐用户自建帖的 tid（不在内置集合中的帖）
+            val allPosts = dao.getAll()
+            val usedTids = allPosts.mapNotNull { it.tid.takeIf { t -> t.isNotBlank() } }.toMutableSet()
+            val userPosts = allPosts
+                .filter { it.id !in builtinIds }
+                .map { p ->
+                    val tid = if (p.tid.isNotBlank()) p.tid else {
+                        val n = TidUtils.generate(usedTids)
+                        usedTids.add(n)
+                        n
                     }
-
-                // 内置数据带新 tid/sourceUrl 重新写入（REPLACE 按 id 覆盖）
-                dao.insertPosts(posts)
-
-                // 用户帖子写回（同样 REPLACE）
-                if (userPosts.isNotEmpty()) {
-                    dao.insertPosts(userPosts)
+                    p.copy(tid = tid)
                 }
+            if (userPosts.isNotEmpty()) {
+                dao.insertPosts(userPosts)
+            }
 
-                // 恢复收藏
-                favoriteIds.forEach { id ->
-                    dao.setFavoriteFlag(id, true)
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+            // 恢复收藏
+            favoriteIds.forEach { id ->
+                dao.setFavoriteFlag(id, true)
             }
         }
 
