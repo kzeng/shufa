@@ -49,3 +49,23 @@
 
 Bring shufa v1.0.1 into Google Play release compliance 
 App 的 1.0.1 版本修改到能通过 Google 应用商店审核的标准
+
+【Google Play 合规检查与代码修改 - 2026-09-07】
+已完成：
+  [x] app/build.gradle.kts：compileSdk / targetSdk 从 35 升至 36，versionCode=11、versionName=1.0.1 保持不变
+  [x] 关于弹窗增加“隐私政策”入口，并加入可滚动的 App 内隐私政策文本
+  [x] 新增 docs/privacy-policy.md，作为待公开托管的隐私政策文档
+  [x] 未修改选贴、看贴、收藏、数据库和网络业务逻辑
+  [x] 未执行 build；git diff --check 已通过
+
+待用户处理：
+  [ ] 审核隐私政策内容，确认开发者身份、联系方式和数据处理描述真实准确
+  [ ] 将 docs/privacy-policy.md 发布到公开 HTTPS 地址，并填入 Play Console Privacy policy
+  [x] 已决定首次创建 Play App 使用 applicationId=com.kai.zeng.shufa；namespace 和 Kotlin 源码包暂保持 com.example.shufa，避免非必要的源码包迁移
+  [ ] 在 Play Console 创建 App 前确认 com.kai.zeng.shufa 可注册且作为永久包名；创建 Play App 后不可更换为同一 App 的其他包名
+  [ ] 创建并离线保存 upload keystore，不提交到 Git；在 Play Console 启用 Google Play App Signing
+  [ ] 使用 compileSdk/targetSdk 36 构建并测试签名 release AAB（本次按要求未 build）
+  [ ] 在onsole 完成 Data Safe Play Cty、目标受众、内容分级、广告声明、商店资料和 App access
+  [ ] 确认字帖文字、说明、图片及第三方网站内容具有合法使用权
+  [ ] 决定是否继续允许 yac8.com 的 HTTP 明文图片请求；禁止明文流量可能影响现有字帖加载，因此本次未改
+  [ ] 若为 2023-11-13 后创建的个人开发者账号，准备至少 12 名测试者连续封闭测试 14 天并申请生产权限

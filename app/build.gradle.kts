@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.example.shufa"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.shufa"
+        applicationId = "com.kai.zeng.shufa"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 11
         versionName = "1.0.1"
     }

@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -57,6 +60,7 @@ fun HomeScreen(
 ) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     var showAboutDialog by remember { mutableStateOf(false) }
+    var showPrivacyPolicyDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -116,7 +120,14 @@ fun HomeScreen(
     }
 
     if (showAboutDialog) {
-        AboutDialog(onDismiss = { showAboutDialog = false })
+        AboutDialog(
+            onDismiss = { showAboutDialog = false },
+            onPrivacyPolicyClick = { showPrivacyPolicyDialog = true }
+        )
+    }
+
+    if (showPrivacyPolicyDialog) {
+        PrivacyPolicyDialog(onDismiss = { showPrivacyPolicyDialog = false })
     }
 }
 
@@ -156,7 +167,10 @@ private fun HomeTab(
 }
 
 @Composable
-private fun AboutDialog(onDismiss: () -> Unit) {
+private fun AboutDialog(
+    onDismiss: () -> Unit,
+    onPrivacyPolicyClick: () -> Unit
+) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
@@ -179,13 +193,52 @@ private fun AboutDialog(onDismiss: () -> Unit) {
                 )
                 Text("书法学习", textAlign = TextAlign.Center)
                 Text("作者：ZengKai", textAlign = TextAlign.Center)
-                Text("邮箱：zengkai001@qq.com", textAlign = TextAlign.Center)
+                Text("邮箱：zengkai001@gmail.com", textAlign = TextAlign.Center)
                 Text("版本：${BuildConfig.VERSION_NAME}", textAlign = TextAlign.Center)
+                TextButton(onClick = onPrivacyPolicyClick) {
+                    Text("隐私政策")
+                }
             }
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
                 Text("确定")
+            }
+        }
+    )
+}
+
+@Composable
+private fun PrivacyPolicyDialog(onDismiss: () -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = "隐私政策",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 480.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text("生效日期：2026 年 9 月 7 日")
+                Text("书法学习（以下简称“本应用”）尊重并保护用户隐私。本应用不要求注册账号，不包含广告、支付、位置、通讯录或相机等功能。")
+                Text("本地数据：收藏的字帖、显示主题、字体大小和用户添加的字帖保存在设备本地。本应用不会将这些本地数据上传到自有服务器。用户可以通过 Android 系统设置清除本应用数据。")
+                Text("网络访问：当用户使用字帖搜索功能时，搜索关键词会发送至 zitiewang.com 以获取搜索结果。本应用还会从字帖数据中记录的第三方网站加载字帖图片。相关网站可能按照各自的隐私政策处理网络请求信息，例如 IP 地址和请求时间。")
+                Text("第三方内容：本应用展示的部分字帖文字、说明和图片来自第三方网站。本应用不使用第三方网站的账号登录或支付服务。")
+                Text("数据安全：本应用不建立自有用户账号体系，也不出售用户数据。用户应避免在搜索框中输入姓名、联系方式或其他不必要的个人信息。")
+                Text("联系我们：如对隐私或数据处理有疑问，请联系 zengkai001@gmail.com。")
+                Text("本政策可能因功能或法律要求变化而更新。更新后的版本会在本应用内显示新的生效日期。")
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("关闭")
             }
         }
     )
