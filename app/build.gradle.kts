@@ -9,17 +9,48 @@ android {
     namespace = "com.example.shufa"
     compileSdk = 36
 
+    // CI supplies these as Gradle properties so every Google Play upload can
+    // have a strictly increasing versionCode without editing this file.
+    val releaseVersionCode = providers.gradleProperty("RELEASE_VERSION_CODE")
+        .orNull
+        ?.toInt()
+    val releaseVersionName = providers.gradleProperty("RELEASE_VERSION_NAME").orNull
+
+    // Read signing data only from the CI environment. The release script
+    // creates RELEASE_STORE_FILE from a temporary, decoded CI secret.
+    val releaseStoreFile = providers.environmentVariable("RELEASE_STORE_FILE").orNull
+    val releaseStorePassword = providers.environmentVariable("RELEASE_STORE_PASSWORD").orNull
+    val releaseKeyAlias = providers.environmentVariable("RELEASE_KEY_ALIAS").orNull
+    val releaseKeyPassword = providers.environmentVariable("RELEASE_KEY_PASSWORD").orNull
+
     defaultConfig {
-        applicationId = "com.kai.zeng.shufa"
+        applicationId = "cn.mitoto.shufa"
         minSdk = 24
         targetSdk = 36
-        versionCode = 11
-        versionName = "1.0.1"
+        versionCode = releaseVersionCode ?: 11
+        versionName = releaseVersionName ?: "1.0.1"
+    }
+
+    signingConfigs {
+        if (
+            !releaseStoreFile.isNullOrBlank() &&
+            !releaseStorePassword.isNullOrBlank() &&
+            !releaseKeyAlias.isNullOrBlank() &&
+            !releaseKeyPassword.isNullOrBlank()
+        ) {
+            create("release") {
+                storeFile = file(releaseStoreFile)
+                storePassword = releaseStorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
     }
 
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.findByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

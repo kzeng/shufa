@@ -53,6 +53,10 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk   # 安装
 adb shell am start -n com.example.shufa/.MainActivity       # 启动
 ```
 
+## Google Play 发布
+
+Ubuntu 22.04 的签名、AAB 打包和 Play Console 自动发布已配置完成；使用说明见 [Google Play 发布指南](docs/google-play-release.md)。
+
 ## 数据来源
 
 字帖数据（图片、介绍文字）来源于以下网站，版权归原作者所有，仅供学习交流：

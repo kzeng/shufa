@@ -26,6 +26,10 @@ local.properties
 .cxx/
 *.jks
 *.keystore
+*.aab
+dist/
+# Local/CI credentials for Google Play must never be committed.
+fastlane/service-account*.json
 
 # Room schemas（生成产物）
 app/schemas/

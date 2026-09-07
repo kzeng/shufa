@@ -1,0 +1,21 @@
+default_platform(:android)
+
+platform :android do
+  desc("Upload one signed AAB to the selected Google Play track")
+  lane :publish do
+    options = {
+      aab: ENV.fetch("AAB_PATH"),
+      track: ENV.fetch("PLAY_TRACK", "internal"),
+      release_status: ENV.fetch("PLAY_RELEASE_STATUS", "completed"),
+      validate_only: ENV.fetch("PLAY_VALIDATE_ONLY", "false") == "true",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    }
+    options[:rollout] = ENV.fetch("PLAY_USER_FRACTION").to_f if ENV["PLAY_USER_FRACTION"]
+
+    upload_to_play_store(**options)
+  end
+end

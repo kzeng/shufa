@@ -61,8 +61,8 @@ App 的 1.0.1 版本修改到能通过 Google 应用商店审核的标准
 待用户处理：
   [ ] 审核隐私政策内容，确认开发者身份、联系方式和数据处理描述真实准确
   [x] 将 docs/privacy-policy.md 发布到公开 HTTPS 地址，并填入 Play Console Privacy policy, https://kzeng.github.io/docs/privacy-policy.html
-  [x] 已决定首次创建 Play App 使用 applicationId=com.kai.zeng.shufa；namespace 和 Kotlin 源码包暂保持 com.example.shufa，避免非必要的源码包迁移
-  [ ] 在 Play Console 创建 App 前确认 com.kai.zeng.shufa 可注册且作为永久包名；创建 Play App 后不可更换为同一 App 的其他包名
+  [x] 已决定首次创建 Play App 使用 applicationId=cn.mitoto.shufa；namespace 和 Kotlin 源码包暂保持 com.example.shufa，避免非必要的源码包迁移
+  [ ] 在 Play Console 创建 App 前确认 cn.mitoto.shufa 可注册且作为永久包名；创建 Play App 后不可更换为同一 App 的其他包名
   [ ] 创建并离线保存 upload keystore，不提交到 Git；在 Play Console 启用 Google Play App Signing
   [ ] 使用 compileSdk/targetSdk 36 构建并测试签名 release AAB（本次按要求未 build）
   [ ] 在onsole 完成 Data Safe Play Cty、目标受众、内容分级、广告声明、商店资料和 App access
