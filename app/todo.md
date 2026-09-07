@@ -44,3 +44,8 @@
 点击列表页条目，进入详情页，抓取碑帖文章内容和碑帖图片URL, 点击‘下一页’翻页。
 
  - 版本号升到v1.0.0 待我确认后再 add tag v1.0.0 and add releases 。
+  
+-------
+
+Bring shufa v1.0.1 into Google Play release compliance 
+App 的 1.0.1 版本修改到能通过 Google 应用商店审核的标准
